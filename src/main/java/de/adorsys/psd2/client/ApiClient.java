@@ -981,6 +981,8 @@ public class ApiClient {
             reqBody = buildRequestBodyFormEncoding(formParams);
         } else if ("multipart/form-data".equals(contentType)) {
             reqBody = buildRequestBodyMultipart(formParams);
+        } else if ("text/plain".equals(contentType)) {
+            reqBody = RequestBody.create(MediaType.parse(contentType),(String) body);
         } else if (body == null) {
             if ("DELETE".equals(method)) {
                 // allow calling DELETE without sending a request body
