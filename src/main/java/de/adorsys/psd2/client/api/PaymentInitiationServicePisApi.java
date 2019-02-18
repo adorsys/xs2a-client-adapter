@@ -1546,7 +1546,11 @@ public class PaymentInitiationServicePisApi {
         final String[] localVarContentTypes = {
             
         };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        final String localVarContentType =
+                paymentProduct.startsWith("dtazv") ?
+                "text/plain" :
+                apiClient.selectHeaderContentType(localVarContentTypes);
+
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
         if(progressListener != null) {
@@ -1800,9 +1804,9 @@ public class PaymentInitiationServicePisApi {
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
 
-        final String[] localVarContentTypes = {
-            
-        };
+        final String[] localVarContentTypes = paymentProduct.startsWith("dtazv")? new String[]{
+            "text/plain"
+        } : new String[]{};
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
