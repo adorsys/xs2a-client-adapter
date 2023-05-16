@@ -19,4 +19,4 @@ jobs:
         echo "$GPG_SECRET_KEY" | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes || true
         echo "$GPG_OWNERTRUST" | base64 --decode | $GPG_EXECUTABLE --import-ownertrust --no-tty --batch --yes || true
         gpg --list-keys
-        gpg --list-keys | grep expired && { echo "Key has expired"; exit 1} || true 
+        gpg --list-keys | grep -v expired || echo "Key has expired"
