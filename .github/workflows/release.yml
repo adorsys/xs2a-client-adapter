@@ -6,8 +6,10 @@ on:
       - '*.*.*'
 
 env:
-  GPG_EXECUTABLE: ${{ secrets.GPG_EXECUTABLE }}
+  GPG_EXECUTABLE: gpg
   GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
@@ -66,9 +68,9 @@ jobs:
         run: |
           gpg --version
           export GPG_TTY="$( tty )" #need to run to sign artifacts with maven
-          echo ${{ secrets.GPG_SECRET_KEY }} | base64 --decode | gpg --import --batch
-          echo ${{ secrets.GPG_OWNERTRUST }} | base64 --decode | gpg --batch --import-ownertrust
-          mvn --settings maven_release_settings.xml \
+          echo "$GPG_SECRET_KEY" | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes || true
+          echo "$GPG_OWNERTRUST" | base64 --decode | $GPG_EXECUTABLE --import-ownertrust --no-tty --batch --yes || true
+          mvn -ntp --settings scripts/mvn-release-settings.xml \
           -Dhttp.keepAlive=false \
           -Dmaven.wagon.http.pool=false \
           -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
