@@ -5,14 +5,6 @@ on:
     tags:
       - '*.*.*'
 
-env:
-  GPG_EXECUTABLE: gpg
-  GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
-  GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
-  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-
 jobs:
   build_and_test:
     name: Build and test xs2a-client-adapter (openjdk 1.11)
@@ -65,6 +57,13 @@ jobs:
         run: mvn clean install -DskipTests -Dmaven.javadoc.skip=true -B -V -q
 
       - name: Publish to Maven Central
+        env:
+          GPG_EXECUTABLE: gpg
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
           gpg --version
           export GPG_TTY="$( tty )" #need to run to sign artifacts with maven
