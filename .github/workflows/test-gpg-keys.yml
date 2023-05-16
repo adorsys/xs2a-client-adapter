@@ -1,0 +1,22 @@
+name: Test GPG
+
+on: [workflow_dispatch]
+
+jobs:
+ test:
+  name: Test GPG Keys
+  runs-on: ubuntu-latest
+  steps:
+    - name: Test GPG Keys
+      env: 
+        GPG_EXECUTABLE: gpg
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+        GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+      run: |
+        gpg --version
+        export GPG_TTY="$( tty )" #need to run to sign artifacts with maven
+        echo "$GPG_SECRET_KEY" | base64 --decode | $GPG_EXECUTABLE --import --no-tty --batch --yes || true
+        echo "$GPG_OWNERTRUST" | base64 --decode | $GPG_EXECUTABLE --import-ownertrust --no-tty --batch --yes || true
+        gpg --list-keys
+        gpg --list-secrets
